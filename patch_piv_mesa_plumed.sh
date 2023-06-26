@@ -21,7 +21,7 @@ else
         # remove existing ANN code and copy updated ANN, and add PIV codes
         rm -rf $plumed_src_directory/annfunc
         cp -rv src/annfunc $plumed_src_directory/.
-        cp -rv src/piv_vec $plumed_src_directory/.
+        cp -rv src/pines $plumed_src_directory/.
 
         echo -e "Copied.\n"
     else

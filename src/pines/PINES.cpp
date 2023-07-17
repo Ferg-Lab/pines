@@ -1,3 +1,19 @@
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Copyright (c) 2023 of Nicholas Herringer and Siva Dasetty.
+
+The PINES module is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+The PINES module is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with plumed.  If not, see <http://www.gnu.org/licenses/>.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 #include "colvar/Colvar.h"
 #include "colvar/ActionRegister.h"
 #include "core/PlumedMain.h"
@@ -49,6 +65,7 @@ SWITCH5={RATIONAL R_0=0.28 MM=12 NN=6}
 NL_CUTOFF=5.0,1.5,1.5,1.5,1.5
 NL_STRIDE=10.0,10.0,10.0,10.0,10.0
 NL_SKIN=0.1,0.1,0.1,0.1,0.1
+PINESREP
 NL_CONSTANT_SIZE=10
 ... PINES
 PRINT STRIDE=1 ARG=PINES FILE=PINES_trj
@@ -74,6 +91,7 @@ SWITCH5={RATIONAL R_0=0.28 MM=12 NN=6}
 NL_CUTOFF=5.0,1.5,1.5,1.5,1.5
 NL_STRIDE=10.0,10.0,10.0,10.0,10.0
 NL_SKIN=0.1,0.1,0.1,0.1,0.1
+PINESREP
 NL_CONSTANT_SIZE=10
 ... PINES
 

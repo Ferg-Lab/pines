@@ -17,14 +17,14 @@ freely, subject to the following restrictions:
    misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-#ifndef __PLUMED_pines_vec_PINES_h
-#define __PLUMED_pines_vec_PINES_h
+#ifndef __PLUMED_PINES_vec_PINES_h
+#define __PLUMED_PINES_vec_PINES_h
 
 
 using namespace std;
 
 namespace PLMD {
-namespace pines {
+namespace PINES {
 // Ideally core/Colvar.h should be moved to this directory and Colvar should stay in namespace PLMD::Sasa
 // With this trick, PLMD::Colvar is visible as PLMD::Sasa::Colvar
 using PLMD::Colvar;
@@ -75,18 +75,18 @@ private:
   std::vector<double> ds_array;
   // ANN_sum_array is the 1D array (sum dv_d/dv_n) written to an output file for use by the ANN code --NH
   //std::vector<double> ANN_sum_array;
-  // ANN pines derivatives array written to output file for use by ANN code --SD
-  std::vector<std::vector<double>> ANN_pines_deriv;
+  // ANN PINES derivatives array written to output file for use by ANN code --SD
+  std::vector<std::vector<double>> ANN_PINES_deriv;
   // The PINES_Pair vectors record the atom IDs for the PINES elements that are passed to the VAE --NH
   std::vector<int> PINES_Pair0;
   std::vector<int> PINES_Pair1;
   Tensor m_virial;
-  // adding a flag (cart2pines) for post-processing a trajectory in cartesian coordinates to a PINES representation
-  bool Svol,cross,direct,doneigh,test,CompDer,com,cart2pines;
+  // adding a flag (cart2PINES) for post-processing a trajectory in cartesian coordinates to a PINES representation
+  bool Svol,cross,direct,doneigh,test,CompDer,com,cart2PINES;
   // -- SD flag for writing a single file containing PINES values when using plumed driver.
-  bool writepinestraj, writestride;
+  bool writePINEStraj, writestride;
   // -- SD variables to control output PINES and ANN PINES derivative file during simulation.
-  int writepinesstride, writeannstride;
+  int writePINESstride, writeannstride;
   // -- SD variables in prepare() function.
   bool invalidateList,firsttime;
 public:

@@ -15,7 +15,7 @@ else
         echo -e "\n"
         echo $plumed_absolute_location
         echo -e "PLUMED src: $plumed_src_directory \n"
-        echo -e "Copying MESA PIV codes to $plumed_src_directory \n"
+        echo -e "Copying PINES codes to $plumed_src_directory \n"
 
         # copy MESA PIV codes to src directory
         # remove existing ANN code and copy updated ANN, and add PIV codes

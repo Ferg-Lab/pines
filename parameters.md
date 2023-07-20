@@ -1,7 +1,7 @@
 #### Supported parameters in PINES
 
-
-PINES ...
+```
+PINES ... 
 LABEL=pines             # Label for referencing this module elsewhere in the PLUMED file.
 PRECISION=10000         # For applying integer sorting algorithm. Precision is used to convert floats to integers. For example, a precision of 100000 implies a float of 0.9999 is 9999. Similarly, a float of 0.99999 to 9999. A minimum of PRECISION=100 is required.
 NLIST                   # Unused parameter.
@@ -19,3 +19,4 @@ NL_SKIN=0.1 # Additional buffer cutoff to nl_cutoff. Neighborlist reconstruction
 NL_CONSTANT_SIZE = 10 # Number of oxygen and hydrogen atoms to retain in each solute-solvent block of PIV.
 WIRITEPIVESTRAJ # Write PIV in each frame. Alternatively, use `print STRIDE=1 ARG=pines.* FILE=colvar.out`. Depending on switching function parameters, some of the values could be ~0.9999. If the value exceeds the precision, then these values will be stored as NAN after converting to integer. In that case colvar reports these values as zeros but WIRITEPIVESTRAJ could be used for reporting the exact values.
 ... PINES
+```

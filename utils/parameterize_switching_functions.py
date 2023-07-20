@@ -11,6 +11,7 @@ import os
 import mdtraj as md
 from sklearn.decomposition import PCA
 import subprocess
+from scipy.signal import savgol_filter
 
 #inputPIV = np.load("nSFP_NaClpiv61.npy")
 if len(sys.argv) < 2:
@@ -42,6 +43,36 @@ atom_name_list = ['O1', 'O2', r'P$_{\alpha}$',  r'P$_{\beta}$', r'P$_{\gamma}$',
 atom_list = [3893, 3894, 13505, 13509, 13513, 13510, 13511, 13512, 13514, 13515, 13516]
 atom_list = ['index ' + str(x-1) for x in atom_list]
 
+def find_first_and_last_peak(rdf):
+    rdf_i=0
+    for i in range(len(rdf)):
+        if i == 0:
+            first_peak_index = i 
+        elif i != 0 and rdf[i] >= rdf[i - 1]:
+            first_peak_index = i
+        else:
+            if rdf_i >=10:
+                break
+            else:
+                rdf_i+=1
+
+    # Find the first peak from the right
+    reverse_rdf = rdf[::-1]
+    rdf_i=0
+    for i in range(len(reverse_rdf)):
+        if i == 0:
+            last_peak_index = i 
+        elif i != 0 and reverse_rdf[i] >= reverse_rdf[i - 1]:
+            last_peak_index = i
+        else:
+            if rdf_i >=10:
+                break
+            else:
+                rdf_i+=1
+
+    return first_peak_index, len(rdf)-last_peak_index
+
+
 
 interactions = []
 for i in range(len(atom_list)-1):
@@ -55,15 +86,16 @@ for i in range(len(atom_list)-1):
     for j in range(i+1,len(atom_list)):
         atom_pairs = trj.top.select_pairs(atom_list[i], atom_list[j])
         dist = md.compute_distances(trj, atom_pairs)
-        bins, counts = md.compute_rdf(trj, atom_pairs, (dist.min(), dist.max()), n_bins=500)
+        bins, counts = md.compute_rdf(trj, atom_pairs, (dist.min(), dist.max()), n_bins=100)
         #bins, counts = md.compute_rdf(trj, atom_pairs, (0.1, 2.5), n_bins=1000)
         
-        
-        pk1_start = np.where(counts != 0)[0][0]
-        pk2_end = np.where(counts != 0)[0][-1]
-        r0 = (bins[pk1_start] + bins[pk2_end])/2.0
-        starts.append(bins[pk1_start])
-        ends.append(bins[pk2_end])
+        smoothed_data = savgol_filter(counts, window_length=10, polyorder=2, mode='nearest') 
+        pk1, pk2 = find_first_and_last_peak(smoothed_data) 
+
+
+        r0 = (bins[pk1] + bins[pk2])/2.0
+        starts.append(bins[pk1])
+        ends.append(bins[pk2])
         r0s.append(round(r0,3))
 
 def rat_switch(r, r0, d0, n, m):

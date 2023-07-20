@@ -35,17 +35,17 @@ Label for referencing this module elsewhere in the PLUMED file.
   
 - PINESATOMS: Total number of atom types. This is the same as the length of ATOMTYPES and is used for detecting errors in ATOMTYPES declaration.
   
-- ATOMTYPES: All atomtypes of solute + solvent for defining the blocks in PIV. In the ONLYCROSS case, the order of the final PIV is based on the sequence of the atom types defined here. In brief, the order of PIV is solute1-solute2, solute1-solute3, ..., solute1-soluteN, solute1-OW [of size equal to NL_CONSTANT_SIZE defined below], solute1-H1 [of size equal to NL_CONSTANT_SIZE defined below], solute2-solute3, solute2-solute4, ..., solute2-soluteN, solute2-OW [of size equal to NL_CONSTANT_SIZE defined below], solute2-H1 [of size equal to NL_CONSTANT_SIZE defined below], ..., soluteN-OW [of size equal to NL_CONSTANT_SIZE defined below], soluteN-H1 [of size equal to NL_CONSTANT_SIZE defined below]. The oxygen atoms are extracted based on NL_CUTOFF and only the number of oxygen atoms equal to NL_CONSTANT_SIZE are retained. Similarly, hydrogen atoms are extracted based on atom indices that share the residue numbers with the oxygen atom indices and only NL_CONSTANT_SIZE hydrogen atoms are retained. Consequently, the total number of elements in PIV is equal to (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3)xNL_CONSTANT_SIZE + (PINESATOMS-3)xNL_CONSTANT_SIZE.
+- ATOMTYPES: All atomtypes of solute + solvent for defining the blocks in PIV. In the ONLYCROSS case, the order of the final PIV is based on the sequence of the atom types defined here. In brief, the order of PIV is solute1-solute2, solute1-solute3, ..., solute1-soluteN, solute1-OW [of size equal to NL_CONSTANT_SIZE defined below], solute1-H1 [of size equal to NL_CONSTANT_SIZE defined below], solute2-solute3, solute2-solute4, ..., solute2-soluteN, solute2-OW [of size equal to NL_CONSTANT_SIZE defined below], solute2-H1 [of size equal to NL_CONSTANT_SIZE defined below], ..., soluteN-OW [of size equal to NL_CONSTANT_SIZE defined below], soluteN-H1 [of size equal to NL_CONSTANT_SIZE defined below]. The oxygen atoms are extracted based on NL_CUTOFF and only the number of oxygen atoms equal to NL_CONSTANT_SIZE are retained. Similarly, hydrogen atoms are extracted based on atom indices that share the residue numbers with the oxygen atom indices and only NL_CONSTANT_SIZE hydrogen atoms are retained. Consequently, the total number of elements in PIV is equal to (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3)xNL_CONSTANT_SIZE + (PINESATOMS-3)xNL_CONSTANT_SIZE. The number of blocks is (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3) + (PINESATOMS-3)
   
-- SFACTOR: Should be the same size as of nelements = (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3)xNL_CONSTANT_SIZE + (PINESATOMS-3)xNL_CONSTANT_SIZE 
+- SFACTOR: Should be the same size as of nblocks = (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3) + (PINESATOMS-3)
   
-- SORT: Should be the same size as of nelements = (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3)xNL_CONSTANT_SIZE + (PINESATOMS-3)xNL_CONSTANT_SIZE 
+- SORT: Should be the same size as of nblocks = (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3) + (PINESATOMS-3) 
   
-- SWITCH1: Should be the same size as of nelements = (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3)xNL_CONSTANT_SIZE + (PINESATOMS-3)xNL_CONSTANT_SIZE
+- SWITCH1: Should be the same size as of nblocks = (PINESATOMS-3)x(PINESATOMS-3)x0.5 + (PINESATOMS-3) + (PINESATOMS-3)
   
 - NL_CUTOFF: Neighbor list cutoff for each element in PIV. Same size as nelements. Use a small value but update the neighbor list frequently, which can be expensive. Alternatively, use a high value and update less frequently to save computational time.
   
-- NL_STRIDE: Frequency to update neighbor list.
+- NL_STRIDE: Frequency to update neighbor list. For post-processing, set it to 1 to read each frame.
   
 - NL_SKIN: Additional buffer cutoff to nl_cutoff. Neighborlist reconstruction is triggered if atoms move out of a radius equal to nlcutoff+skin.
   
@@ -55,4 +55,5 @@ Label for referencing this module elsewhere in the PLUMED file.
 
 ##### Miscellaneous
 
-Use unique atom names in the input reference PDB file to let `PINES` recognize the atom types of solute. Only `OW`, `HW1` and `HW2` are currently recognized as atom types in PINES for solvent. The input reference PDB file is primarily used for fetching the indices of atoms in each element of PIV. Therefore, it can be a separate file than that is used for performing the simulations.
+- Use unique atom names in the input reference PDB file to let `PINES` recognize the atom types of solute. Only `OW`, `HW1` and `HW2` are currently recognized as atom types in PINES for solvent. The input reference PDB file is primarily used for fetching the indices of atoms in each element of PIV. Therefore, it can be a separate file than that is used for performing the simulations.
+- Further information on the parameters can be found in [src/pines/PINES.cpp][src/pines/PINES.cpp].

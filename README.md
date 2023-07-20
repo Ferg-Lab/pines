@@ -26,3 +26,7 @@ else,
 - [Argon 13 cluster](examples/SimulationFiles/Ar13)
 - [C45 in water](examples/SimulationFiles/C45/)
 - [NaCl in water](examples/SimulationFiles/NaCl)
+
+## Parameters
+
+Please refer [parameters.md](parameters.md) for a template PLUMED file along with annotations explaining each parameter. In case if the annotations are not helpful, please open an issue and explain your problem.

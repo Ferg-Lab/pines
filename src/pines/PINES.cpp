@@ -24,7 +24,7 @@ along with plumed.  If not, see <http://www.gnu.org/licenses/>.
 #include "tools/Pbc.h"
 #include "tools/Stopwatch.h"
 
-// -- SD header file for both ANN function and PINES
+// -- SD header file for PINES
 #include "PINES.h"
 
 #include <string>
@@ -159,6 +159,7 @@ void PINES::registerKeywords( Keywords& keys )
   // Changing "COMPONENTS" to "default" and slightly modifying the name. Added components for ANN_SUM_DERIV
   keys.addOutputComponent("ELEMENT", "default", "Elements of the PINES block. The position in the N choose 2 interactions (i) and the neighbor in the neighbor list (j) is given as PINES-i-j.");
   //keys.addOutputComponent("ANNSUMDERIV", "default", "2D array of PINES element partial derivatives (used with ANN module).");
+  keys.addFlag("ENABLE_LOG",false,"Flag to enable logging.");
   keys.reset_style("SWITCH","compulsory");
 }
 
@@ -215,9 +216,16 @@ PINES::PINES(const ActionOptions&ao):
   cart2PINES(true),
   // SD -- used in prepare function.
   invalidateList(true),
-  firsttime(true)
+  firsttime(true),
+  enableLog(false)
 {
+  if(keywords.exists("ENABLE_LOG")) {
+    parseFlag("ENABLE_LOG",enableLog);
+  }
+
+  if (enableLog) {
   log << "Starting PINES Constructor\n";
+  }
 
   // Precision on the real-to-integer transformation for the sorting
   parse("PRECISION",Nprec);
@@ -227,28 +235,36 @@ PINES::PINES(const ActionOptions&ao):
   bool nopbc=!pbc;
   parseFlag("NOPBC",nopbc);
   pbc=!nopbc;
-  if(pbc) {
-    log << "Using Periodic Boundary Conditions\n";
-  } else  {
-    log << "Isolated System (NO PBC)\n";
+  if (enableLog) {
+    if(pbc) {
+      log << "Using Periodic Boundary Conditions\n";
+    } else  {
+      log << "Isolated System (NO PBC)\n";
+    }
   }
 
   // SERIAL/PARALLEL
   parseFlag("SERIAL",serial);
-  if(serial) {
-    log << "Serial PINES construction\n";
-  } else     {
-    log << "Parallel PINES construction\n";
+  if (enableLog) {
+    if(serial) {
+      log << "Serial PINES construction\n";
+    } else     {
+      log << "Parallel PINES construction\n";
+    }
   }
 
   // Derivatives
   parseFlag("DERIVATIVES",CompDer);
+  if (enableLog) {
   if(CompDer) log << "Computing Derivatives\n";
+  }
 
   // Timing
   parseFlag("TIMER",timer);
   if(timer) {
-    log << "Timing analysis\n";
+    if (enableLog) {
+      log << "Timing analysis\n";
+    }
     stopwatch.start();
     stopwatch.pause();
   }
@@ -281,11 +297,15 @@ PINES::PINES(const ActionOptions&ao):
   }
   if(oc) {
     direct=false;
-    log << "Using only CROSS-PINES blocks\n";
+    if (enableLog) {
+      log << "Using only CROSS-PINES blocks\n";
+    }
   }
   if(od) {
     cross=false;
-    log << "Using only DIRECT-PINES blocks\n";
+    if (enableLog) {
+      log << "Using only DIRECT-PINES blocks\n";
+    }
   }
 
   // Atoms for PINES
@@ -329,7 +349,9 @@ PINES::PINES(const ActionOptions&ao):
   PDB mypdb;
   FILE* fp=fopen(ref_file.c_str(),"r");
   if (fp!=NULL) {
-    log<<"Opening PDB file with reference frame: "<<ref_file.c_str()<<"\n";
+    if (enableLog) {
+      log<<"Opening PDB file with reference frame: "<<ref_file.c_str()<<"\n";
+    }
     mypdb.readFromFilepointer(fp,plumed.getAtoms().usingNaturalUnits(),0.1/atoms.getUnits().getLength());
     fclose (fp);
   } else {
@@ -372,7 +394,9 @@ PINES::PINES(const ActionOptions&ao):
 
   comatm.resize(NLsize);
 
-  log << "Total COM/Atoms: " << Natm*resnum << " \n";
+  if (enableLog) {
+    log << "Total COM/Atoms: " << Natm*resnum << " \n";
+  }
   // Build lists of Atoms/COMs for NLists
   //   comatm filled also for non_COM calculation for analysis purposes
   unsigned countIndex = 0;
@@ -431,14 +455,18 @@ PINES::PINES(const ActionOptions&ao):
       }
     }
     // Output Lists
-    log << "  Groups of type  " << j << ": " << Plist[j].size() << " \n";
+    if (enableLog) {
+      log << "  Groups of type  " << j << ": " << Plist[j].size() << " \n";
+    }
     string gname;
     unsigned gsize;
 
     gname=mypdb.getAtomName(comatm[Pind0[oind]-1][0]);
     gsize=1;
 
+    if (enableLog) {
     log.printf("    %6s %3s %13s %10i %6s\n", "type  ", gname.c_str(),"   containing ",gsize," atoms");
+    }
   }
 
   // SD This is to build the list with the atoms required for PINES.
@@ -566,7 +594,9 @@ PINES::PINES(const ActionOptions&ao):
       if(nl_skin[j]<=0.) error("NL_SKIN should be explicitly specified and positive");
       nl_cut[j]=nl_cut[j]+nl_skin[j];
     }
-    log << "Creating Neighbor Lists \n";
+    if (enableLog) {
+      log << "Creating Neighbor Lists \n";
+    }
     // SD -- nlall is a neighbor list created using list all. nl_cut[0] and nl_st[0] are probably not needed.
     // WARNING: is nl_cut meaningful here?
     nlall= new NeighborList(listall,true,pbc,getPbc(),comm,nl_cut[0],nl_st[0]);
@@ -806,16 +836,20 @@ PINES::PINES(const ActionOptions&ao):
       nlreduced= new NeighborList(listreduced,true,pbc,getPbc(),comm,nl_cut[0],nl_st[0]);
     }
   } else {
-    log << "WARNING: Neighbor List not activated this has not been tested!!  \n";
+    if (enableLog) {
+      log << "WARNING: Neighbor List not activated this has not been tested!!  \n";
+    }
     nlall= new NeighborList(listall,true,pbc,getPbc(),comm);
     for (unsigned j=0; j<Nlist; j++) {
       nl[j]= new NeighborList(Plist[j],Plist[j],true,true,pbc,getPbc(),comm);
     }
   }
   // Output Nlist
-  log << "Total Nlists: " << Nlist << " \n";
-  for (unsigned j=0; j<Nlist; j++) {
-    log << "  list " << j+1 << "   size " << nl[j]->size() << " \n";
+  if (enableLog) {
+    log << "Total Nlists: " << Nlist << " \n";
+    for (unsigned j=0; j<Nlist; j++) {
+      log << "  list " << j+1 << "   size " << nl[j]->size() << " \n";
+    }
   }
 
 
@@ -841,23 +875,33 @@ PINES::PINES(const ActionOptions&ao):
     }
   }
   //build box vectors and correct for pbc
-  log << "Building the box from PDB data ... \n";
+  if (enableLog) {
+    log << "Building the box from PDB data ... \n";
+  }
   Tensor Box=mypdb.getBoxVec();
-  log << "  Done! A,B,C vectors in Cartesian space:  \n";
-  log.printf("  A:  %12.6f%12.6f%12.6f\n", Box[0][0],Box[0][1],Box[0][2]);
-  log.printf("  B:  %12.6f%12.6f%12.6f\n", Box[1][0],Box[1][1],Box[1][2]);
-  log.printf("  C:  %12.6f%12.6f%12.6f\n", Box[2][0],Box[2][1],Box[2][2]);
-  log << "Changing the PBC according to the new box \n";
+  if (enableLog) {
+    log << "  Done! A,B,C vectors in Cartesian space:  \n";
+    log.printf("  A:  %12.6f%12.6f%12.6f\n", Box[0][0],Box[0][1],Box[0][2]);
+    log.printf("  B:  %12.6f%12.6f%12.6f\n", Box[1][0],Box[1][1],Box[1][2]);
+    log.printf("  C:  %12.6f%12.6f%12.6f\n", Box[2][0],Box[2][1],Box[2][2]);
+    log << "Changing the PBC according to the new box \n";
+  }
   Pbc mypbc;
   mypbc.setBox(Box);
-  log << "The box volume is " << mypbc.getBox().determinant() << " \n";
+  if (enableLog) {
+    log << "The box volume is " << mypbc.getBox().determinant() << " \n";
+  }
 
   //Compute scaling factor
   if(Svol) {
     Fvol=cbrt(Vol0/mypbc.getBox().determinant());
-    log << "Scaling atom distances by  " << Fvol << " \n";
+    if (enableLog) {
+      log << "Scaling atom distances by  " << Fvol << " \n";
+    }
   } else {
-    log << "Using unscaled atom distances \n";
+    if (enableLog) {
+      log << "Using unscaled atom distances \n";
+    }
   }
 
   r00.resize(Nlist);
@@ -868,7 +912,9 @@ PINES::PINES(const ActionOptions&ao):
   if(CompDer) {
     // Set switching function parameters here only if computing derivatives
     //   now set at the beginning of the dynamics to solve the r0 issue
-    log << "Switching Function Parameters \n";
+    if (enableLog) {
+      log << "Switching Function Parameters \n";
+    }
     sfs.resize(Nlist);
     std::string errors;
     for (unsigned j=0; j<Nlist; j++) {
@@ -888,14 +934,18 @@ PINES::PINES(const ActionOptions&ao):
       Tools::convert(j+1, num);
       if( errors.length()!=0 ) error("problem reading SWITCH" + num + " keyword : " + errors );
       r00[j]=sfs[j].get_r0();
-      log << "  Swf: " << j << "  r0=" << (sfs[j].description()).c_str() << " \n";
+      if (enableLog) {
+        log << "  Swf: " << j << "  r0=" << (sfs[j].description()).c_str() << " \n";
+      }
     }
   }
 
 
   // build the rPINES distances (transformation and sorting is done afterwards)
-  if(CompDer) {
-    log << "  PINES  |  block   |     Size      |     Zeros     |     Ones      |" << " \n";
+  if (enableLog) {
+    if(CompDer) {
+      log << "  PINES  |  block   |     Size      |     Zeros     |     Ones      |" << " \n";
+    }
   }
   checkRead();
   // Create components of PINES
@@ -1298,11 +1348,15 @@ void PINES::calculate()
       Fvol=cbrt(Vol0/getBox().determinant());
     }
     //Set switching function parameters
-    log << "\n";
-    log << "REFERENCE PDB # " << prev_stp+2 << " \n";
+    if (enableLog) {
+      log << "\n";
+      log << "REFERENCE PDB # " << prev_stp+2 << " \n";
+    }
     // Set switching function parameters here only if computing derivatives
     //   now set at the beginning of the dynamics to solve the r0 issue
-    log << "Switching Function Parameters \n";
+    if (enableLog) {
+      log << "Switching Function Parameters \n";
+    }
     sfs.resize(Nlist);
     std::string errors;
     for (unsigned j=0; j<Nlist; j++) {
@@ -1322,12 +1376,16 @@ void PINES::calculate()
       Tools::convert(j+1, num);
       if( errors.length()!=0 ) error("problem reading SWITCH" + num + " keyword : " + errors );
       r00[j]=sfs[j].get_r0();
-      log << "  Swf: " << j << "  r0=" << (sfs[j].description()).c_str() << " \n";
+      if (enableLog) {
+        log << "  Swf: " << j << "  r0=" << (sfs[j].description()).c_str() << " \n";
+      }
     }
   }
   // Do the sorting only once per timestep to avoid building the PINES N times for N rPINES PDB structures!
   if ((getStep()>prev_stp&&getStep()%updatePINES==0)||CompDer) {
-    if (CompDer) log << " Step " << getStep() << "  Computing Derivatives NON-SORTED PINES \n";
+    if (enableLog) {
+      if (CompDer) log << " Step " << getStep() << "  Computing Derivatives NON-SORTED PINES \n";
+    }
     //
     // build COMs from positions if requested
     // update neighbor lists when an atom moves out of the Neighbor list skin
@@ -1375,7 +1433,9 @@ void PINES::calculate()
             prev_pos[j][i]=tmp_pos[j][i];
           }
           nl[j]->update(prev_pos[j]);
-          log << " Step " << getStep() << "  Neighbour lists updated " << nl[j]->size() << " \n";
+          if (enableLog) {
+            log << " Step " << getStep() << "  Neighbour lists updated " << nl[j]->size() << " \n";
+          }
         }
       }
     }
@@ -1820,9 +1880,11 @@ void PINES::calculate()
 
   //Timing
   if(timer) stopwatch.stop("4 Build For Derivatives");
-  if(timer) {
-    log.printf("Timings for action %s with label %s \n", getName().c_str(), getLabel().c_str() );
-    log<<stopwatch;
+  if (enableLog) {
+    if(timer) {
+      log.printf("Timings for action %s with label %s \n", getName().c_str(), getLabel().c_str() );
+      log<<stopwatch;
+    }
   }
   unsigned total_count=0;
   for (int j = 0; j < Nlist; j++) {

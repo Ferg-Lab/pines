@@ -56,4 +56,7 @@ Label for referencing this module elsewhere in the PLUMED file.
 ##### Miscellaneous
 
 - Use unique atom names in the input reference PDB file to let `PINES` recognize the atom types of solute. Only `OW`, `HW1` and `HW2` are currently recognized as atom types in PINES for solvent. The input reference PDB file is primarily used for fetching the indices of atoms in each element of PIV. Therefore, it can be a separate file than that is used for performing the simulations.
-- Further information on the parameters can be found in [src/pines/PINES.cpp][src/pines/PINES.cpp].
+- Further information on the parameters can be found in [src/pines/PINES.cpp](src/pines/PINES.cpp) or see below snapshot.
+
+![pines](https://github.com/Ferg-Lab/pines/assets/38693318/c197d449-7a22-4111-be78-911f77170a91)
+

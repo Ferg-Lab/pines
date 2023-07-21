@@ -1,10 +1,10 @@
-Permutation Invariat Vector (PIV)
+Permutation Invariat Enhanced Sampling (PINES)
 ====================================
 
 
 Install
 ------------------------------------
-Enable compilation by adding the `--enable-modules=+piv`
+Enable compilation by adding the `--enable-modules=+pines`
 to the configure command.
 
 
@@ -16,8 +16,8 @@ using
 
 Authors
 ------------------------------------
-Silvio Pipolo (University of Lille) <silvio.pipolo@univ-lille.fr>
-Fabio Pietrucci (Sorbonne University, Paris) <fabio.pietrucci@impmc.upmc.fr>
+Nick Herringer (U.Chicago) <nherringer@uchicago.edu>
+Siva Dasetty (U.Chicago) <sivadasetty@uchicago.edu>
 
 
 Copyright

@@ -1,12 +1,12 @@
-LOAD FILE=../../../src/pines/PINES.cpp
-LOAD FILE=../../../src/annfunc/ANNB.cpp
+LOAD FILE=../../src/pines/PINES.cpp
+LOAD FILE=../../src/annbfunc/ANNB.cpp
 
 PINES ...
 LABEL=pines
 PRECISION=10000
 NLIST
 ONLYCROSS
-REF_FILE=md.pdb
+REF_FILE=../SimulationFiles/C45/md.pdb
 PINESATOMS=10
 ATOMTYPES=C3,C8,C13,C18,C23,C28,C33,C38,C43,OW
 SFACTOR=1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0

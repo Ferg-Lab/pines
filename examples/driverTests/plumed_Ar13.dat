@@ -1,12 +1,12 @@
-LOAD FILE=../../../src/pines/PINES.cpp
-LOAD FILE=../../../src/annfunc/ANNB.cpp
+LOAD FILE=../../src/pines/PINES.cpp
+LOAD FILE=../../src/annbfunc/ANNB.cpp
 
 PINES ...
 LABEL=pines
 PRECISION=10000
 NLIST
 ONLYDIRECT
-REF_FILE=md.pdb
+REF_FILE=../SimulationFiles/Ar13/md.pdb
 PINESATOMS=1
 ATOMTYPES=Ar
 SFACTOR=1.0

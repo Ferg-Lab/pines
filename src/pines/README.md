@@ -1,5 +1,5 @@
-Permutation Invariat Enhanced Sampling (PINES)
-====================================
+Permutationally Invariant Network Enhanced Sampling (PINES)
+===========================================================
 
 
 Install

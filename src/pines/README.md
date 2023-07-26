@@ -18,6 +18,7 @@ Authors
 ------------------------------------
 Nick Herringer (U.Chicago) <nherringer@uchicago.edu>
 Siva Dasetty (U.Chicago) <sivadasetty@uchicago.edu>
+Andrew L. Ferguson (U.Chicago) <andrewferguson@uchicago.edu>
 
 
 Copyright

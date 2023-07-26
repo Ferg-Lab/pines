@@ -9,17 +9,21 @@ Implementation of PINES in PLUMED2
 
 ## Installation
 
-If PLUMED2+MD Engine already exist,
-* Download this repository
-* Execute `patch_piv_mesa_plumed.sh <path_to_PLUMED>`
-* Re-install PLUMED2 with `--enable-modules=all` or `--enable-modules=pines`
-
+If PLUMED2+MD engine exist,
   
+-  Follow this for reinstalling PLUMED with PINES:
+   * Download this repository
+   * Execute `patch_piv_mesa_plumed.sh <path_to_PLUMED>`
+   * Re-install PLUMED2 with `--enable-modules=all` or `--enable-modules=pines+annbfunc`
+- Alternative usage without reinstalling PLUMED:
+  * use `LOAD` command in PLUMED to link in plumed.dat file with the `PINES` codes in this repository. Example usage can be found in [examples/driverTests](examples/driverTests).
+
 else,
-* Download MD Engine & PLUMED2.
 * Download this repository
+* Download MD Engine & PLUMED2.
 * Execute `patch_piv_mesa_plumed.sh <path_to_PLUMED>`
-* Follow standard MD Engine + PLUMED2 installation process with `--enable-modules=all` or `--enable-modules=pines`
+* Follow standard MD Engine + PLUMED2 installation process with `--enable-modules=all` or `--enable-modules=pines+annbfunc`
+
   
 ## Examples
 

@@ -214,6 +214,7 @@ PINES::PINES(const ActionOptions&ao):
   writestride(false),
   writePINESstride(-1),
   cart2PINES(true),
+  com(false),
   // SD -- used in prepare function.
   invalidateList(true),
   firsttime(true),
@@ -372,7 +373,7 @@ PINES::PINES(const ActionOptions&ao):
   std:: vector<unsigned> Presind;
   // Build Presind
   for (unsigned i=0; i<mypdb.getAtomNumbers().size(); i++) {
-    unsigned rind=mypdb.getResidueNumber(mypdb.getAtomNumbers()[i]);
+    int rind=mypdb.getResidueNumber(mypdb.getAtomNumbers()[i]);
     bool oldres=false;
     for (unsigned j=0; j<Presind.size(); j++) {
       if(rind==Presind[j]) {
@@ -412,7 +413,7 @@ PINES::PINES(const ActionOptions&ao):
       string rname=mypdb.getResidueName(anum);
       string aname=mypdb.getAtomName(anum);
       // Index associated to residue/atom: used to separate COM-lists
-      unsigned rind=mypdb.getResidueNumber(anum);
+      int rind=mypdb.getResidueNumber(anum);
       unsigned aind=anum.index();
       // This builds lists for NL
       string Pname;
@@ -482,7 +483,7 @@ PINES::PINES(const ActionOptions&ao):
       for (unsigned i=0; i<mypdb.getAtomNumbers().size(); i++) {
         // SD --- including only user defined atom types;
         AtomNumber at_num = mypdb.getAtomNumbers()[i];
-        unsigned rind=mypdb.getResidueNumber(mypdb.getAtomNumbers()[i]);                                                                        
+        int rind=mypdb.getResidueNumber(mypdb.getAtomNumbers()[i]);                                                                        
         // ResidueName/Atomname associated to atom                                                                        
         string at_name = mypdb.getAtomName(at_num);                                                                             
         if(at_name == atype[j]) {
@@ -811,7 +812,7 @@ PINES::PINES(const ActionOptions&ao):
           }
         }
       }
-      int count_nl_loop=0;
+      unsigned count_nl_loop=0;
       if(cross) {
         for(unsigned j=0; j<Natm-1; j++) {
           for(unsigned i=j+1; i<Natm; i++) {
@@ -956,21 +957,21 @@ PINES::PINES(const ActionOptions&ao):
   // and expects that the interaction with solvent is the last block of the each solute atom's interactions
   // Total count keeps a running tally of the elements in the entire PINES so that there will be an equal number of components.
   unsigned total_count=0;
-  int count_nl_loop=0;
+  unsigned count_nl_loop=0;
   if(cross) {
-  for(int j = 0; j < Natm; j++) {
-    for(int i= j+1; i < Natm; i++) {
+  for(unsigned j = 0; j < Natm; j++) {
+    for(unsigned i= j+1; i < Natm; i++) {
       if (count_nl_loop < Nlist) {
         // Add elements for the various solvent blocks if needed
         if(atype[i] == "OW") {
-          for(int n = 0; n < NL_const_size; n++) {
+          for(unsigned n = 0; n < NL_const_size; n++) {
             string comp = "ELEMENT-" + to_string(total_count);
             addComponentWithDerivatives(comp); 
             componentIsNotPeriodic(comp);
             total_count += 1;
           }
         } else if(atype[i] == "HW1") {
-          for(int n = 0; n < 2*NL_const_size; n++) {
+          for(unsigned n = 0; n < 2*NL_const_size; n++) {
             string comp = "ELEMENT-" + to_string(total_count);
             addComponentWithDerivatives(comp); 
             componentIsNotPeriodic(comp);
@@ -1251,7 +1252,7 @@ void PINES::prepare() {
           }
         }
       }
-      int count_nl_loop=0;
+      unsigned count_nl_loop=0;
       for(unsigned j=0; j<Natm-1; j++) {
         for(unsigned i=j+1; i<Natm; i++) {
           if (count_nl_loop < Nlist) {
@@ -1497,7 +1498,7 @@ void PINES::calculate()
           int sb_count=0;
           int discards=0;
           // Account for twice as many hydrogen as oxygen
-          int max_solv_atoms = NL_const_size;
+          unsigned max_solv_atoms = NL_const_size;
           if (std::find(NList_HW_blocks.begin(), NList_HW_blocks.end(), j) != NList_HW_blocks.end()) {
             max_solv_atoms = 2*NL_const_size;
           }
@@ -1710,7 +1711,7 @@ void PINES::calculate()
       // Solute-solvent blocks have more neighbors than necessary so that padding is not necessary.
       // The solute-solvent blocks are already sorted so the last elements of the block (size NL_const_size) are the desired interactions to include
       // i.e. the closest solute-solvent interactions. This is irrelevant for the solute-solute interactions. 
-      int start_val=0;
+      unsigned start_val=0;
       // This sets the start value to be NL_const_size away from the end of the sorted block to choose the desired interactions.
       
       int max_solv_atoms = NL_const_size;
@@ -1760,7 +1761,7 @@ void PINES::calculate()
   }
   if (writestride) {
     if ( getStep() % writePINESstride == 0) {
-      fprintf(PINES_rep_file, "\n#END OF FRAME: %d \n", getStep());
+      fprintf(PINES_rep_file, "\n#END OF FRAME: %lld \n", getStep());
       fclose(PINES_rep_file);
     }
   }
@@ -1789,7 +1790,7 @@ void PINES::calculate()
     for(unsigned j=0; j<Nlist; j++) {
       unsigned limit=0;
       limit = cPINES[j].size();
-      int start_val=0;
+      unsigned start_val=0;
 
       int max_solv_atoms = NL_const_size;
       if (std::find(NList_HW_blocks.begin(), NList_HW_blocks.end(), j) != NList_HW_blocks.end()) {
@@ -1887,10 +1888,10 @@ void PINES::calculate()
     }
   }
   unsigned total_count=0;
-  for (int j = 0; j < Nlist; j++) {
+  for (unsigned j = 0; j < Nlist; j++) {
     unsigned limit=0;
     limit = cPINES[j].size();
-    int start_val=0;
+    unsigned start_val=0;
 
     int max_solv_atoms = NL_const_size;
     if (std::find(NList_HW_blocks.begin(), NList_HW_blocks.end(), j) != NList_HW_blocks.end()) {
@@ -1902,7 +1903,7 @@ void PINES::calculate()
         start_val = limit - max_solv_atoms;
       }
     }
-    for (int i = start_val; i < limit; i++) {
+    for (unsigned i = start_val; i < limit; i++) {
       string comp = "ELEMENT-" + to_string(total_count);
       Value* valueNew=getPntrToComponent(comp);
       valueNew -> set(cPINES[j][i]);

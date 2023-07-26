@@ -36,10 +36,13 @@ private:
   ForwardDecl<Stopwatch> stopwatch_fwd;
   Stopwatch& stopwatch=*stopwatch_fwd;
   // Added NL_const_size to fix solute-solvent elements as constant size
-  int updatePINES,NL_const_size;
+  unsigned NL_const_size;
+  int updatePINES;
   size_t Nprec;
-  unsigned Natm,Nlist,NLsize,solv_blocks;
-  double Fvol,Vol0,m_PINESdistance;
+  unsigned Natm,Nlist,NLsize;
+  double Fvol,Vol0;
+  double m_PINESdistance;
+  unsigned solv_blocks;
   std::string ref_file;
   NeighborList *nlall;
   NeighborList *nlreduced;
@@ -56,39 +59,44 @@ private:
   std::vector<NeighborList *> nlcom;
   std::vector<Vector> m_deriv;
 
-  std::vector<unsigned> AtomToResID_Dict;
-  std::vector<unsigned> NList_OW_blocks;
-  std::vector<unsigned> NList_HW_blocks;
-  std::vector<std::vector<AtomNumber>> Plist;
-  std::vector<AtomNumber> listall;
-  std::vector<AtomNumber> listreduced;
-  std::vector<AtomNumber> listnonwater;
-  std::vector<double> nl_cut;
-  std::vector<int> nl_st;
-  std::vector<string> atype;
-
-  // ann_deriv is the 3D array (dv(r)/dxyz) passed to the plumed core --NH
-  std::vector<std:: vector<Vector> > ann_deriv;
-  // dr_dxyz_array is the 3D array (dr/dxyz) used to build ann_deriv and ANN_sum_array --NH
-  std::vector<std:: vector<Vector> > dr_dxyz_array;
   // ds_array is the 1D array (dv(r)/dr) of the switching function --NH
   std::vector<double> ds_array;
-  // ANN_sum_array is the 1D array (sum dv_d/dv_n) written to an output file for use by the ANN code --NH
-  //std::vector<double> ANN_sum_array;
-  // ANN PINES derivatives array written to output file for use by ANN code --SD
-  std::vector<std::vector<double>> ANN_PINES_deriv;
+  // ann_deriv is the 3D array (dv(r)/dxyz) passed to the plumed core --NH
+  std::vector<std:: vector<Vector> > ann_deriv;
+
   // The PINES_Pair vectors record the atom IDs for the PINES elements that are passed to the VAE --NH
   std::vector<int> PINES_Pair0;
   std::vector<int> PINES_Pair1;
-  Tensor m_virial;
+
+  std::vector<std::vector<AtomNumber>> Plist;
+  std::vector<AtomNumber> listall;
+  std::vector<unsigned> AtomToResID_Dict;
+  std::vector<unsigned> NList_OW_blocks;
+  std::vector<unsigned> NList_HW_blocks;
+  std::vector<AtomNumber> listreduced;
+  std::vector<AtomNumber> listnonwater;
+  std::vector<string> atype;
+  std::vector<double> nl_cut;
+  std::vector<int> nl_st;
+
   // adding a flag (cart2PINES) for post-processing a trajectory in cartesian coordinates to a PINES representation
-  bool Svol,cross,direct,doneigh,test,CompDer,com,cart2PINES;
-  // -- SD flag for writing a single file containing PINES values when using plumed driver.
-  bool writePINEStraj, writestride;
+  // -- SD flag for writing a single file containing PINES values when using plumed driver [writePINEStraj,writestride];
+  bool Svol,cross,direct,doneigh,test,CompDer,writePINEStraj,writestride;
   // -- SD variables to control output PINES and ANN PINES derivative file during simulation.
-  int writePINESstride, writeannstride;
+  int writePINESstride, writeannstride; 
+  bool cart2PINES, com; // NOTE com not tested/used -- SD
+
   // -- SD variables in prepare() function.
-  bool invalidateList,firsttime;
+  bool invalidateList,firsttime,enableLog;
+  
+  Tensor m_virial; // [NOT SUPPORTED/USED -- SD]
+
+  // dr_dxyz_array is the 3D array (dr/dxyz) used to build ann_deriv and ANN_sum_array --NH [NOT USED -- SD]
+  // std::vector<std:: vector<Vector> > dr_dxyz_array;
+  // ANN_sum_array is the 1D array (sum dv_d/dv_n) written to an output file for use by the ANN code --NH
+  //std::vector<double> ANN_sum_array;
+  // ANN PINES derivatives array written to output file for use by ANN code --SD
+  // std::vector<std::vector<double>> ANN_PINES_deriv; [NOT USED -- SD]
 public:
   static void registerKeywords( Keywords& keys );                                                                       
   explicit PINES(const ActionOptions&); 

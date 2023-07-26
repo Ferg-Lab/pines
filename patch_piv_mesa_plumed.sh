@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$#" -lt 1 ]; then
-	echo "Please specify PLUMED path for patching it with MESA PIV codes."
+	echo "Please specify PLUMED path for patching it with PINES codes."
 	#exit 1
 else
 
@@ -18,9 +18,10 @@ else
         echo -e "Copying PINES codes to $plumed_src_directory \n"
 
         # copy MESA PIV codes to src directory
-        # remove existing ANN code and copy updated ANN, and add PIV codes
-        rm -rf $plumed_src_directory/annfunc
-        cp -rv src/annfunc $plumed_src_directory/.
+        # remove existing ANN code and copy updated ANN with ANNB (if desired) or add as separte module
+	# Also, add PINES code
+        #rm -rf $plumed_src_directory/annbfunc
+        cp -rv src/annbfunc $plumed_src_directory/.
         cp -rv src/pines $plumed_src_directory/.
 
         echo -e "Copied.\n"

@@ -1,5 +1,5 @@
-Permutation Invariat Enhanced Sampling (PINES)
-==============================================
+Permutationally Invariant Network Enhanced Sampling (PINES)
+===========================================================
 
 
 Install
@@ -10,15 +10,15 @@ to the configure command.
 
 Documentation
 ------------------------------------
-See the generated documentation in PLUMED or refer [parameters](../../parameters.md) for information on
-using this module.
+See the generated documentation for information on
+using
 
 
 Authors
 ------------------------------------
 Nick Herringer (U.Chicago) <nherringer@uchicago.edu>
 Siva Dasetty (U.Chicago) <sivadasetty@uchicago.edu>
-Andrew Ferguson (U.Chicago) <andrewferguson@uchicago.edu>
+Andrew L. Ferguson (U.Chicago) <andrewferguson@uchicago.edu>
 
 
 Copyright

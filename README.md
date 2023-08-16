@@ -1,4 +1,4 @@
-# Discovery of Many-Body and Solvent-Inclusive Collective Variables Using Permutationally Invariant Networks for Enhanced Sampling (PINES)
+# Permutationally Invariant Networks for Enhanced Sampling (PINES): Discovery of Multi-Molecular and Solvent-Inclusive Collective Variables
 
 Implementation of PINES in PLUMED2
 

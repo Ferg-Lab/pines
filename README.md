@@ -1,5 +1,6 @@
 # Permutationally Invariant Networks for Enhanced Sampling (PINES): Discovery of Multi-Molecular and Solvent-Inclusive Collective Variables
 
+
 Implementation of PINES in PLUMED2
 
 ## Requirements
@@ -9,7 +10,7 @@ Implementation of PINES in PLUMED2
 
 ## Installation
 
-If PLUMED2+MD engine exist,
+Case 1: With installed PLUMED2+MD,
   
 -  Follow this for reinstalling PLUMED with PINES:
    * Download this repository
@@ -18,7 +19,7 @@ If PLUMED2+MD engine exist,
 - Alternative usage without reinstalling PLUMED:
   * use `LOAD` command in PLUMED to link in plumed.dat file with the `PINES` codes in this repository. Example usage can be found in [examples/driverTests](examples/driverTests).
 
-else,
+Case 2: New installation of PLUMED2+MD,
 * Download this repository
 * Download MD Engine & PLUMED2.
 * Execute `patch_piv_mesa_plumed.sh <path_to_PLUMED>`
@@ -33,4 +34,21 @@ else,
 
 ## Parameters
 
-Please refer [parameters.md](parameters.md) for a template PLUMED file along with annotations explaining each parameter. In case if the annotations are not helpful, please open an issue and explain your problem.
+Please refer [parameters.md](parameters.md) for a template PLUMED file along with annotations explaining each parameter. In case the annotations are not clear, please let us know by opening an issue in this repo.
+
+## Citation
+
+If you use this code in your work, please cite:
+
+Herringer, Nicholas SM; Dasetty, Siva; Gandhi, Diya; Lee, Junhee; Ferguson, Andrew L. "Permutationally Invariant Networks for Enhanced Sampling (PINES): Discovery of Multi-Molecular and Solvent-Inclusive Collective Variables." arXiv preprint arXiv:2308.08680. DOI: [https://doi.org/10.48550/arXiv.2308.08680](https://doi.org/10.48550/arXiv.2308.08680)
+
+```
+@misc{herringer2023permutationally,
+      title={Permutationally Invariant Networks for Enhanced Sampling (PINES): Discovery of Multi-Molecular and Solvent-Inclusive Collective Variables}, 
+      author={Nicholas S. M. Herringer and Siva Dasetty and Diya Gandhi and Junhee Lee and Andrew L. Ferguson},
+      year={2023},
+      eprint={2308.08680},
+      archivePrefix={arXiv},
+      primaryClass={q-bio.BM}
+}
+```
